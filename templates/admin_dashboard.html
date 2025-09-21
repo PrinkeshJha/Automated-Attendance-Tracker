@@ -1,0 +1,167 @@
+{% extends "_base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Admin Dashboard</h1>
+    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addUserModal">
+        <i class="material-icons" style="vertical-align: middle;">person_add</i> Add New User (Staff Only)
+    </button>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary shadow">
+            <div class="card-body">
+                <h5 class="card-title">Total Registered Users</h5>
+                <p class="card-text fs-2">{{ total_users }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success shadow">
+            <div class="card-body">
+                <h5 class="card-title">Attendance Marked Today</h5>
+                <p class="card-text fs-2">{{ attendance_today_count }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info shadow">
+            <div class="card-body">
+                <h5 class="card-title">Model Status</h5>
+                <p class="card-text fs-2">
+                    {% if model_exists %}
+                        <i class="material-icons" style="vertical-align: middle;">check_circle</i> Trained
+                    {% else %}
+                        <i class="material-icons" style="vertical-align: middle;">warning</i> Untrained
+                    {% endif %}
+                </p>
+                <a href="{{ url_for('train_model_route') }}" class="btn btn-light btn-sm mt-2">Retrain Model</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header"><h5>Attendance Trend (Last 7 Days)</h5></div>
+            <div class="card-body">
+                <canvas id="attendanceChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#users">Manage Users</a></li>
+                    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#attendance">Full Attendance Log</a></li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="users">
+                        <table class="table table-hover">
+                            <thead><tr><th>ID</th><th>Username</th><th>Role</th><th>Registered On</th><th>Action</th></tr></thead>
+                            <tbody>
+                                {% for user in all_users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.role.title() }}</td>
+                                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <a href="{{ url_for('capture_face', userid=user.id) }}" class="btn btn-warning btn-sm">
+                                                <i class="material-icons" style="vertical-align: middle; font-size: 1rem;">photo_camera</i> Capture Face
+                                            </a>
+                                            <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST" onsubmit="return confirm('Are you sure? This will delete the user and all their attendance records.');">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="material-icons" style="vertical-align: middle; font-size: 1rem;">delete</i> Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="attendance">
+                        <table class="table table-hover">
+                            <thead><tr><th>Record ID</th><th>Username</th><th>User ID</th><th>Date</th><th>Time</th></tr></thead>
+                            <tbody>
+                                {% for record in all_attendance_records %}
+                                <tr>
+                                    <td>{{ record.id }}</td>
+                                    <td>{{ record.user.username }}</td>
+                                    <td>{{ record.user_id }}</td>
+                                    <td>{{ record.timestamp.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ record.timestamp.strftime('%H:%M:%S') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New User (Staff Only)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('admin_add_user_details') }}" method="POST">
+                    <div class="mb-3"><label class="form-label">User ID</label><input type="number" name="userid" class="form-control" required></div>
+                    <div class="mb-3"><label class="form-label">Username</label><input type="text" name="username" class="form-control" required></div>
+                    <div class="mb-3"><label class="form-label">Password</label><input type="password" name="password" class="form-control" required></div>
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select name="role" class="form-select" required>
+                            <option value="student">Student</option>
+                            <option value="staff">Staff</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Add User Details & Proceed to Face Capture</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/attendance_chart_data')
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            const labels = data.map(item => item.date);
+            const counts = data.map(item => item.count);
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Attendance Count',
+                        data: counts,
+                        backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+            });
+        });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - Smart Facial Attendance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f2f5; /* Light background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .login-left {
+            flex: 1;
+            padding: 40px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .login-right {
+            flex: 1;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 40px;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+            position: relative;
+        }
+        .login-right::before { /* For subtle background pattern */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M0 60L60 0H0V60zM60 60V0L0 60h60z'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.2;
+        }
+        .logo { font-size: 1.8rem; font-weight: bold; margin-bottom: 30px; color: #333; }
+        .form-control { border-radius: 8px; padding: 12px; }
+        .btn-primary { background-color: #6a11cb; border-color: #6a11cb; border-radius: 8px; padding: 12px; font-size: 1.1rem; }
+        .btn-primary:hover { background-color: #550db0; border-color: #550db0; }
+        .alt-login { margin-top: 20px; }
+        .alt-login button {
+            background-color: transparent;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+        }
+        .alt-login button img { margin-right: 10px; width: 20px; height: 20px; }
+        .footer-text { font-size: 0.8rem; color: #aaa; margin-top: 30px; }
+
+        @media (max-width: 992px) {
+            .login-right { display: none; }
+            .login-left { flex: none; width: 100%; padding: 30px; }
+            .login-container { width: 90%; height: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-left">
+            <div class="logo">
+                <i class="material-icons" style="vertical-align: middle; font-size: 2rem;">face_retouching_natural</i>
+                Smart Facial Attendance
+            </div>
+            <h3 class="mb-4">Welcome Back!</h3>
+            <p class="text-muted mb-4">Log in to access your attendance management system.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="alert-container mb-3">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="mb-3">
+                    <label for="userid" class="form-label visually-hidden">User ID</label>
+                    <input type="text" class="form-control" id="userid" name="userid" placeholder="User ID" required autofocus>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label visually-hidden">Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="material-icons" style="font-size: 1.2rem;">visibility_off</i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-3">Login</button>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="text-muted">Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+            </div>
+
+            <div class="footer-text text-center mt-auto">
+                <p>Copyright &copy; 2025 Smart Facial Attendance</p>
+            </div>
+        </div>
+        <div class="login-right">
+            <div class="position-relative" style="z-index: 1;">
+                <h2 class="mb-3">Effortlessly manage attendance.</h2>
+                <p class="lead">Simplify daily logging for students and staff with facial recognition.</p>
+                <i class="material-icons" style="font-size: 8rem; color: rgba(255,255,255,0.8); margin-top: 30px;">fingerprint</i>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function (e) {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('i').textContent = type === 'password' ? 'visibility_off' : 'visibility';
+        });
+    </script>
+</body>
+</html>

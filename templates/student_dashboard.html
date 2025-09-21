@@ -1,0 +1,40 @@
+{% extends "_base.html" %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Welcome, {{ current_user.username }}</h1>
+        <p class="col-md-8 fs-4">This is your personal attendance dashboard. You can mark your attendance for today or view your past records.</p>
+        {% if not attendance_today %}
+            <a href="{{ url_for('mark_attendance') }}" class="btn btn-success btn-lg">
+                <i class="material-icons" style="vertical-align: middle;">camera_alt</i> Mark Today's Attendance
+            </a>
+        {% else %}
+            <button class="btn btn-secondary btn-lg" disabled>
+                <i class="material-icons" style="vertical-align: middle;">check_circle</i> Attendance Marked Today at {{ attendance_today.timestamp.strftime('%H:%M:%S') }}
+            </button>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header"><h4>My Attendance History</h4></div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr><th>Date</th><th>Time</th></tr>
+            </thead>
+            <tbody>
+                {% for record in history %}
+                <tr>
+                    <td>{{ record.timestamp.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ record.timestamp.strftime('%H:%M:%S') }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="2" class="text-center">You have no attendance records.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

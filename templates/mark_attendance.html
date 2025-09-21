@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+{% block title %}Mark Attendance{% endblock %}
+{% block content %}
+<div class="text-center">
+    <h2>Marking Attendance for {{ current_user.username }}</h2>
+    <p class="lead">Please look directly at the camera. Your attendance will be marked automatically if your face is recognized.</p>
+    <div class="my-3">
+        <img src="{{ url_for('video_feed_mark_attendance') }}" width="640" height="480" class="border rounded shadow-sm">
+    </div>
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-danger btn-lg mt-3">
+        <i class="material-icons" style="vertical-align: middle;">stop_circle</i> Stop and Go to Dashboard
+    </a>
+</div>
+{% endblock %}
