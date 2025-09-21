@@ -140,7 +140,7 @@ Visit 👉 `http://127.0.0.1:5000` in your browser.
 Licensed under the **MIT License**.
 
 ```
-© 2025 YOUR NAME
+© 2025 PrinkeshJha
 ```
 
 ---
