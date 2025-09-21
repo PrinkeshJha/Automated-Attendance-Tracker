@@ -69,7 +69,7 @@ Managing physical records is tedious, and analyzing attendance trends is manual 
 ```bash
 git clone https://github.com/YOUR_USERNAME/automated-attendance-tracker.git
 cd automated-attendance-tracker
-
+```
 
 2. **Create & activate a virtual environment**
 
