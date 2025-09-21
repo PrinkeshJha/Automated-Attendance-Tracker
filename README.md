@@ -150,11 +150,5 @@ Licensed under the **MIT License**.
 * Built with ❤️ using **Flask + OpenCV + Scikit-learn**
 * Frontend powered by **Bootstrap 5 + Chart.js**
 
-```
+<!-- ``` -->
 
----
-
-👉 I fixed all broken links, added proper badges, cleaned up the structure, and made it more attractive.  
-
-Do you want me to also **add a "Project Structure" section with a tree view** (like in your Jarvis README) so contributors can navigate the repo more easily?
-```
