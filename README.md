@@ -125,6 +125,33 @@ Visit 👉 `http://127.0.0.1:5000` in your browser.
 
 ---
 
+## 📂 Project Structure
+
+```
+/Smart-Facial-Attendance
+|
+|-- app.py
+|-- models.py
+|-- haarcascade_frontalface_default.xml
+|-- requirements.txt
+|
+|-- instance/
+|   |-- attendance.db  (Created automatically)
+|
+|-- static/
+|   |-- faces/
+|   |-- face_recognition_model.pkl
+|
+|-- templates/
+|   |-- _base.html
+|   |-- login.html
+|   |-- admin_dashboard.html
+|   |-- student_dashboard.html
+|   |-- mark_attendance.html
+|   |-- capture_face.html
+```
+---
+
 ## 🔮 Future Scope
 
 * 🤖 **Deep Learning Models** (FaceNet, Siamese Networks).
